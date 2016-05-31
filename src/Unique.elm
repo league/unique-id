@@ -4,15 +4,18 @@ module Unique exposing
   , andThen
   , map
   , map2
+  , map3
+  , replicate
   , return
   , run
+  , sequence
   , unique
   )
 
 {-|
 Pure generation of unique identifiers in Elm.
 
-@docs Id, Unique, andThen, return, run, map, map2
+@docs Id, Unique, andThen, unique, return, run, map, map2, map3, replicate, sequence
 
 -}
 
@@ -54,3 +57,26 @@ map f ua =
 map2 : (a -> b -> c) -> Unique a -> Unique b -> Unique c
 map2 f ua ub =
   ua `andThen` \a -> ub `andThen` \b -> return (f a b)
+
+{-| TODO -}
+map3 : (a -> b -> c -> d) -> Unique a -> Unique b -> Unique c -> Unique d
+map3 f ua ub uc =
+  ua `andThen` \a ->
+    ub `andThen` \b ->
+      uc `andThen` \c ->
+        return (f a b c)
+
+{-| TODO -}
+replicate : Int -> Unique a -> Unique (List a)
+replicate n f =
+  if n <= 0 then return []
+  else f `andThen` \head ->
+    replicate (n-1) f `andThen` \tail ->
+      return (head::tail)
+
+{-| TODO -}
+sequence : List(Unique a) -> Unique(List a)
+sequence list =
+  case list of
+    [] -> return []
+    (head::tail) -> map2 (::) head (sequence tail)
