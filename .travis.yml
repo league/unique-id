@@ -1,0 +1,9 @@
+dist: trusty
+sudo: required
+language: generic
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y git npm nodejs-legacy
+  - sudo npm install -g elm
+script:
+  - elm package install -y && elm make --yes && tests/run-tests.sh
