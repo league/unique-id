@@ -27,23 +27,23 @@ marked with a `Unique.Id`:
 ```elm
 type Tree a
   = Branch (Tree a) (Tree a)
-  | Leaf a U.Id
+  | Leaf a Unique.Id
 ```
 
 We define the alias `TreeGen` to describe a computation that produces a `Tree`:
 
 ```elm
-type alias TreeGen a = U.Unique (Tree a)
+type alias TreeGen a = Unique.Unique (Tree a)
 ```
 
 Then by providing these alternative constructors:
 
 ```elm
 leaf : a -> TreeGen a
-leaf a = U.map (Leaf a) U.unique
+leaf a = Unique.map (Leaf a) Unique.unique
 
 branch : TreeGen a -> TreeGen a -> TreeGen a
-branch left right = U.map2 Branch left right
+branch left right = Unique.map2 Branch left right
 ```
 
 we can produce trees within `Unique` like this:
@@ -64,8 +64,8 @@ Suppose now we want to splice a new tree into an existing tree at a certain
 leaf. We can specify the `Id` of the leaf to be replaced, and do the entire
 computation within `Unique` (via the `TreeGen` alias):
 
-```
-splice : U.Id -> TreeGen a -> Tree a -> TreeGen a
+```elm
+splice : Unique.Id -> TreeGen a -> Tree a -> TreeGen a
 splice id subst tree =
   case tree of
     Leaf x k ->
