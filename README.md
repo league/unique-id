@@ -80,7 +80,7 @@ boxes: brown-bordered boxes for branches and green boxes for leaves. When you
 hover over one of the leaves, it will splice the other tree onto that point and
 show the result.
 
-(TODO:screenshot)
+![Screenshot from example showing tree 1 spliced into tree 2](https://raw.githubusercontent.com/league/unique-id/master/tests/tree-identity.png)
 
 This library fulfills a similar role to the
 `[Data.Unique](https://hackage.haskell.org/package/base-4.9.0.0/docs/Data-Unique.html)`
