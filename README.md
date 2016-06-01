@@ -8,13 +8,14 @@ Sometimes we need unique identifiers attached to some parts of a data structure
 so we can identify them for analysis and processing. Therefore it's convenient
 to have a source from which we can acquire unique IDs. In an impure language,
 we'd just designate a mutable integer variable `nextId` and then use `nextId++`
-wherever a uniqueId is needed. That doesn't work in a pure language, but this
+wherever a unique Id is needed. That doesn't work in a pure language, but this
 library makes it relatively convenient.
 
 We specify computations within the `Unique` type, and then `run` that
-computation to allocate all the identifiers within the computation. Within one
-invocation of `run`, all the generated `Id` values are guaranteed to be unique.
-However, multiple invocations of `run` will generate conflicting `Id`s.
+computation to allocate all the identifiers therein. Within one invocation of
+`run`, all the generated `Id` values are guaranteed to be unique. However,
+multiple invocations of `run` will generate conflicting `Id`s. Therefore, as
+much as possible you want to specify computations wrapped within `Unique`.
 
 `Unique` computations can be specified with the typical `andThen` and `map`
 operations. The function `unique` generates the next `Id` and `return` produces
@@ -74,6 +75,9 @@ splice id subst tree =
     Branch left right ->
       branch (splice id subst left) (splice id subst right)
 ```
+
+The resulting tree will regenerate identifiers for all the leaves in its
+`tree` parameter.
 
 The `Example` module continues with a UI that renders binary trees as nested
 boxes: brown-bordered boxes for branches and green boxes for leaves. When you

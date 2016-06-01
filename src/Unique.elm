@@ -35,7 +35,7 @@ supported on `Id` values.
 -}
 type Id = Id Int
 
-{-| A calculation that consumes unique identifiers and produces a value of type
+{-| A computation that consumes unique identifiers and produces a value of type
 `a`.
 -}
 type Unique a = U (Id -> (a, Id))
@@ -56,7 +56,7 @@ return a = U(\k -> (a, k))
 unique : Unique Id
 unique = U(\k -> (k, next k))
 
-{-| TODO -}
+{-| Chain together two `Unique` computations. -}
 andThen : Unique a -> (a -> Unique b) -> Unique b
 andThen (U fa) fb =
   U(\k0 -> let (a, k1) = fa k0 in open (fb a) k1)
