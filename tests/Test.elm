@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import ElmTest exposing (..)
+import Html exposing (..)
 import String
 import Unique exposing (..)
 
@@ -54,5 +55,6 @@ tests = suite "Unique IDs"
                        return "Now", map toString unique]
         ]
 
-main =
-  runSuite tests
+main = runSuite tests
+
+--  pre [] [text (stringRunner tests)]

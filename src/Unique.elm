@@ -62,7 +62,7 @@ andThen (U fa) fb =
   U(\k0 -> let (a, k1) = fa k0 in open (fb a) k1)
 
 {-| Run a computation that consumes unique IDs. Within one invocation of `run`,
-the generated `Id` values are guaranteed to bu unique. However, multiple
+the generated `Id` values are guaranteed to be unique. However, multiple
 invocations of `run` will generate conflicting `Id`s. -}
 run : Unique a -> a
 run (U f) = fst (f (Id 0))
