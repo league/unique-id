@@ -15,7 +15,6 @@ structures.
 -}
 
 import Html exposing (..)
-import Html.App
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Unique as U
@@ -144,7 +143,7 @@ model =
   }
 
 main =
-  Html.App.beginnerProgram
+  Html.beginnerProgram
       { model = model
       , view = view
       , update = update
