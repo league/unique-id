@@ -1,9 +1,19 @@
-dist: trusty
-sudo: required
-language: generic
+sudo: false
+os:
+  - linux
+cache:
+  directories:
+    - elm-stuff/packages
+env:
+  matrix:
+    - ELM_VERSION=0.18.0 TARGET_NODE_VERSION=node
 before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y git npm nodejs-legacy
-  - sudo npm install -g elm
+  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+install:
+  - nvm install $TARGET_NODE_VERSION
+  - nvm use $TARGET_NODE_VERSION
+  - node --version
+  - npm --version
+  - npm install -g elm@$ELM_VERSION elm-test
 script:
-  - elm package install -y && elm make --yes && tests/run-tests.sh
+  - ./run-tests
