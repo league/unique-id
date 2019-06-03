@@ -1,11 +1,9 @@
-port module Main exposing (..)
+module Tests exposing (..)
 
-import Expect exposing (equal, notEqual, false)
-import Json.Encode exposing (Value)
-import String
-import Test exposing (Test, describe, test)
-import Test.Runner.Node exposing (TestProgram)
+import Debug exposing (toString)
 import Unique exposing (..)
+import Expect exposing (equal, false, notEqual)
+import Test exposing (Test, describe, test)
 
 tests : Test
 tests = describe "Unique IDs"
@@ -15,9 +13,9 @@ tests = describe "Unique IDs"
           <| return 91
 
         , test "Two uniques in the same run are different"
-          <| \() -> uncurry notEqual
+          <| \() -> (\(x,y) -> notEqual x y)
           <| run
-          <| map2 (,) unique unique
+          <| map2 Tuple.pair unique unique
 
         , test "But uniques in different runs are the same"
           <| \() -> equal (run unique) (run unique)
@@ -57,9 +55,3 @@ tests = describe "Unique IDs"
           <| sequence [return "Ok", map toString unique,
                        return "Now", map toString unique]
         ]
-
-
-main : TestProgram
-main = Test.Runner.Node.run emit tests
-
-port emit : (String, Value) -> Cmd msg

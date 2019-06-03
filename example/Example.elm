@@ -14,6 +14,7 @@ structures.
 
 -}
 
+import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -46,21 +47,23 @@ splice id subst tree =
     Branch left right ->
       branch (splice id subst left) (splice id subst right)
 
+nodeStyle : String -> List (Attribute msg)
 nodeStyle color =
-  [ ("border", "2px solid " ++ color)
-  , ("float", "left")
-  , ("padding", "2px")
-  , ("margin", "2px")
+  [ style "border" ("2px solid " ++ color)
+  , style "float" "left"
+  , style "padding" "2px"
+  , style "margin" "2px"
   ]
 
+branchStyle : List (Attribute msg)
 branchStyle =
   nodeStyle "brown"
 
 leafStyle =
-  ("background", "lightgreen") :: nodeStyle "green"
+  style "background" "lightgreen" :: nodeStyle "green"
 
 activeStyle =
-  ("background", "orange") :: nodeStyle "green"
+  style "background" "orange" :: nodeStyle "green"
 
 here : Maybe U.Id -> U.Id -> Bool
 here id1Opt id2 =
@@ -82,36 +85,40 @@ activeTree : Maybe U.Id -> Tree String -> Html Msg
 activeTree idOpt tree =
   case tree of
     Branch left right ->
-      div [style branchStyle] [activeTree idOpt left, activeTree idOpt right]
+      div branchStyle [activeTree idOpt left, activeTree idOpt right]
     Leaf x k ->
-      div [ style <| if here idOpt k then activeStyle else leafStyle
-          , onMouseEnter <| SpliceAt k
-          , onMouseLeave <| NoSplice
-          ] [text x]
+      div ((onMouseEnter <| SpliceAt k)
+          :: (onMouseLeave <| NoSplice)
+          :: (if here idOpt k then activeStyle else leafStyle))
+          [text x]
 
 showTree : Tree String -> Html Msg
 showTree tree =
   case tree of
     Branch left right ->
-      div [style branchStyle] [showTree left, showTree right]
+      div branchStyle [showTree left, showTree right]
     Leaf x _ ->
-      div [style leafStyle] [text x]
+      div leafStyle [text x]
 
+update : Msg -> Model -> Model
 update msg model =
   case msg of
     SpliceAt s -> {model | spliceAt = Just s}
     NoSplice   -> {model | spliceAt = Nothing}
 
-clear =
-  style [ ("clear", "both")
-        , ("float", "left")
-        , ("min-width", "8em")
-        , ("text-align", "right")
-        , ("margin-right", "1em")
-        ]
 
+clear : List (Attribute msg)
+clear =
+  [ style "clear" "both"
+  , style "float" "left"
+  , style "min-width" "8em"
+  , style "text-align" "right"
+  , style "margin-right" "1em"
+  ]
+
+view : Model -> Html Msg
 view model =
-  let (t1, t2) = U.run <| U.map2 (,) model.t1 model.t2
+  let (t1, t2) = U.run <| U.map2 Tuple.pair model.t1 model.t2
       t3 =
         case model.spliceAt of
           Nothing -> t1
@@ -119,17 +126,17 @@ view model =
                     if contains s t1 then splice s model.t2 t1
                     else splice s model.t1 t2
   in
-    div [] [ h3  [clear] [text "Tree 1"]
+    div [] [ h3  clear [text "Tree 1"]
            , div []      [activeTree model.spliceAt t1]
-           , h3  [clear] [text "Tree 2"]
+           , h3  clear [text "Tree 2"]
            , div []      [activeTree model.spliceAt t2]
-           , h3  [clear] [text <| toString model.spliceAt]
-           , h3  [clear] [text "Spliced"]
+           , h3  clear [text <| Debug.toString model.spliceAt]
+           , h3  clear [text "Spliced"]
            , div []      [showTree t3]
            ]
 
-model : Model
-model =
+initialModel : Model
+initialModel =
   { t1 =
     branch (branch (branch (leaf "can") (leaf "do"))
                      (leaf "cab"))
@@ -143,8 +150,8 @@ model =
   }
 
 main =
-  Html.beginnerProgram
-      { model = model
+  Browser.sandbox
+      { init = initialModel
       , view = view
       , update = update
       }
