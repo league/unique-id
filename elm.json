@@ -3,12 +3,9 @@
     "name": "league/unique-id",
     "summary": "Pure generation of unique identifiers in Elm.",
     "license": "MIT",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "exposed-modules": [
         "Unique"
-    ],
-    "source-directories": [
-        "src"
     ],
     "elm-version": "0.19.0 <= v < 0.20.0",
     "dependencies": {
